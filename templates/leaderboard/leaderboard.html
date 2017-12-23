@@ -10,8 +10,27 @@
 
 {% block content %}
     <h2>Top Investors</h2>
-    <div class="center">
-        {% include "leaderboard/includes/list.html" with name='Investors' leaders=top_earned_investors %}
+
+    <body onload="leaderLoadFunction()" style="margin:0;">
+
+    <div id="loader"></div>
+
+    <div style="display:none;" id="leader-loaded" class="animate-bottom">
+        <div class="center">
+            {% include "leaderboard/includes/list.html" with name='Investors' leaders=top_earned_investors %}
+        </div>
     </div>
 
+<script>
+    var pageLoad;
+
+    function leaderLoadFunction() {
+        pageLoad = setTimeout(showPage, window.onload);
+    }
+
+    function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("leader-loaded").style.display = "block";
+    }
+</script>
 {% endblock %}
