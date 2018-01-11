@@ -14,9 +14,8 @@ class LeaderboardView(TemplateView):
 
     template_name = 'leaderboard/leaderboard.html'
 
-    def investor_context(self, investor, key_to_copy):
+    def investor_context(self, investor):
         context = investor.profile_context()
-        context['amount'] = context[key_to_copy]
         context.update({
             'name': investor.get_display_name(),
             'url': investor.public_profile_url(),
@@ -30,9 +29,9 @@ class LeaderboardView(TemplateView):
     def calculate_leaderboard(self):
         # Top earned investors
         user_profiles = UserProfile.objects.filter(invest_anonymously=False)
-        top_earned_investors = [self.investor_context(user_profile, 'total_earned') for user_profile in user_profiles]
-        top_earned_investors = filter(lambda context: context['amount'] > 0, top_earned_investors)
-        top_earned_investors = sorted(top_earned_investors, key=lambda context: context['amount'], reverse=True)[:20]
+        top_earned_investors = [self.investor_context(user_profile) for user_profile in user_profiles]
+        top_earned_investors = filter(lambda c: c['percentage'] > 0, top_earned_investors)
+        top_earned_investors = sorted(top_earned_investors, key=lambda c: c['percentage'], reverse=True)[:20]
 
         return {
             'top_earned_investors': top_earned_investors,
